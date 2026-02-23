@@ -17,6 +17,8 @@
 #import "GeneralPrefsPaneVC.h"
 #import "ResolutionSyncPrefsPaneVC.h"
 
+#import "ControllerPrefs.h"
+
 typedef enum : NSUInteger {
     SystemTheme,
     LightTheme,
@@ -28,6 +30,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSWindowController *aboutWC;
 @property (nonatomic, strong) ControllerNavigation *controllerNavigation;
 @property (weak) IBOutlet NSMenuItem *themeMenuItem;
+@property (strong) ControllerPrefs *controllerWC;
 @end
 
 @implementation AppDelegateForAppKit
@@ -160,6 +163,14 @@ typedef enum : NSUInteger {
                 break;
         }
     }
+}
+
+- (IBAction)showController:(id)sender {
+    if (!self.controllerWC) {
+        self.controllerWC = [[ControllerPrefs alloc] initWithWindowNibName:@"ControllerPrefs"];
+    }
+    [self.controllerWC showWindow:nil];
+    [self.controllerWC.window makeKeyAndOrderFront:nil];
 }
 
 @end

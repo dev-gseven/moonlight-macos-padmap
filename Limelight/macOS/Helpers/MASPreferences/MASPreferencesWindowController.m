@@ -93,9 +93,6 @@ static NSString * PreferencesKeyForViewBounds (NSString *identifier)
         [self.window setFrameTopLeftPoint:NSPointFromString(origin)];
     }
     
-    if (@available(macOS 11.0, *)) {
-        self.window.toolbarStyle = NSWindowToolbarStylePreference;
-    }
     self.window.styleMask &= ~NSWindowStyleMaskResizable;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMove:)   name:NSWindowDidMoveNotification object:self.window];

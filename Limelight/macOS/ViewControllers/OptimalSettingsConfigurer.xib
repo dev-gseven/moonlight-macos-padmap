@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,28 +20,28 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="Hz6-mo-xeY" userLabel="Optimal Settings View">
-            <rect key="frame" x="0.0" y="0.0" width="407" height="266"/>
+            <rect key="frame" x="0.0" y="0.0" width="422" height="266"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="le4-R1-Ifi" userLabel="Scroll View">
-                    <rect key="frame" x="0.0" y="52" width="407" height="214"/>
+                    <rect key="frame" x="0.0" y="53" width="422" height="213"/>
                     <clipView key="contentView" drawsBackground="NO" id="cV5-GN-rLj">
-                        <rect key="frame" x="1" y="1" width="405" height="212"/>
+                        <rect key="frame" x="1" y="1" width="405" height="196"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <customView translatesAutoresizingMaskIntoConstraints="NO" id="1Oh-go-KH3" userLabel="Content View">
-                                <rect key="frame" x="0.0" y="-32" width="405" height="244"/>
+                                <rect key="frame" x="0.0" y="-45" width="405" height="241"/>
                                 <subviews>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2QJ-Ba-LBh" userLabel="Game title">
-                                        <rect key="frame" x="14" y="208" width="185" height="16"/>
+                                        <rect key="frame" x="14" y="205" width="174" height="16"/>
                                         <textFieldCell key="cell" title="Game Title Optimal Settings" id="NhY-mX-kqv">
-                                            <font key="font" textStyle="headline" name=".SFNS-Bold"/>
+                                            <font key="font" usesAppearanceFont="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0U3-ah-qgd">
-                                        <rect key="frame" x="164" y="167" width="75" height="18"/>
+                                        <rect key="frame" x="167" y="165" width="71" height="18"/>
                                         <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="QsA-io-rV7">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
@@ -51,15 +51,15 @@
                                         </connections>
                                     </button>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="6uB-Zr-bk1">
-                                        <rect key="frame" x="14" y="136" width="90" height="16"/>
+                                        <rect key="frame" x="14" y="135" width="90" height="16"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Display Mode:" id="vl5-uX-Xbt">
-                                            <font key="font" textStyle="body" name=".SFNS-Regular"/>
+                                            <font key="font" usesAppearanceFont="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <popUpButton horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yzS-pa-Sxg" userLabel="Display mode selector">
-                                        <rect key="frame" x="111" y="129" width="177" height="25"/>
+                                        <rect key="frame" x="112" y="129" width="175" height="25"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="170" id="ETi-eP-ujM"/>
                                         </constraints>
@@ -79,51 +79,51 @@
                                         </connections>
                                     </popUpButton>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ioK-eU-7mZ">
-                                        <rect key="frame" x="21" y="104" width="83" height="16"/>
+                                        <rect key="frame" x="21" y="103" width="83" height="16"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Optimize for:" id="CRd-WF-JOM">
-                                            <font key="font" textStyle="body" name=".SFNS-Regular"/>
+                                            <font key="font" usesAppearanceFont="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="V5W-iA-XqR">
-                                        <rect key="frame" x="113" y="82" width="66" height="13"/>
+                                        <rect key="frame" x="113" y="82" width="82" height="16"/>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="Performance" id="pPN-ai-a0F">
-                                            <font key="font" textStyle="footnote" name=".SFNS-Regular"/>
+                                            <font key="font" usesAppearanceFont="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HlG-c4-AZd" userLabel="Speed image">
-                                        <rect key="frame" x="114" y="100" width="16" height="22"/>
+                                        <rect key="frame" x="114" y="106" width="16" height="16"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="HlG-c4-AZd" secondAttribute="height" multiplier="1:1" id="eK1-IL-fQl"/>
                                             <constraint firstAttribute="width" constant="16" id="woC-B8-imd"/>
                                         </constraints>
-                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="speedometer" catalog="system" id="7Os-MC-FkP"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="7Os-MC-FkP"/>
                                     </imageView>
                                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8aT-Yi-NF0" userLabel="Settings slider">
-                                        <rect key="frame" x="134" y="95" width="235" height="28"/>
+                                        <rect key="frame" x="134" y="101" width="235" height="24"/>
                                         <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" numberOfTickMarks="1" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Gy7-sO-PHc"/>
                                         <connections>
                                             <action selector="didChangeIndexOfSettingsSlider:" target="-2" id="0F0-1F-OAk"/>
                                         </connections>
                                     </slider>
                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nqY-BC-8Sk" userLabel="Quality image">
-                                        <rect key="frame" x="373" y="100" width="16" height="22"/>
+                                        <rect key="frame" x="373" y="106" width="16" height="16"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="nqY-BC-8Sk" secondAttribute="height" multiplier="1:1" id="1pb-ap-nZe"/>
                                             <constraint firstAttribute="width" constant="16" id="C3j-07-2VV"/>
                                         </constraints>
-                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="4k.tv" catalog="system" id="Oje-Ic-wO3"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="Oje-Ic-wO3"/>
                                     </imageView>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pJh-sp-eIM">
-                                        <rect key="frame" x="352" y="82" width="38" height="13"/>
+                                        <rect key="frame" x="343" y="85" width="47" height="13"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="13" id="2DP-Nv-D8f"/>
                                         </constraints>
                                         <textFieldCell key="cell" lineBreakMode="clipping" title="Quality" id="qvZ-c9-fpe">
-                                            <font key="font" textStyle="footnote" name=".SFNS-Regular"/>
+                                            <font key="font" usesAppearanceFont="YES"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
@@ -221,16 +221,16 @@
                         </constraints>
                     </clipView>
                     <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="re9-aP-3IV">
-                        <rect key="frame" x="1" y="197" width="405" height="16"/>
+                        <rect key="frame" x="1" y="197" width="405" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
-                    <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="eCX-E2-62f">
-                        <rect key="frame" x="390" y="1" width="16" height="212"/>
+                    <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.66666666666666674" horizontal="NO" id="eCX-E2-62f">
+                        <rect key="frame" x="406" y="1" width="15" height="196"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jCS-fh-O84">
-                    <rect key="frame" x="332" y="9" width="66" height="32"/>
+                    <rect key="frame" x="340" y="9" width="72" height="32"/>
                     <buttonCell key="cell" type="push" title="Done" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="UX9-Un-uVX">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -251,8 +251,4 @@
             <point key="canvasLocation" x="172.5" y="139"/>
         </customView>
     </objects>
-    <resources>
-        <image name="4k.tv" catalog="system" width="19" height="15"/>
-        <image name="speedometer" catalog="system" width="15" height="15"/>
-    </resources>
 </document>

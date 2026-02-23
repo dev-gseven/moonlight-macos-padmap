@@ -98,9 +98,9 @@ const CGFloat scaleBase = 1.125;
     [super viewWillAppear];
     
     self.parentViewController.title = self.host.name;
-    if (@available(macOS 11.0, *)) {
+    /*if (@available(macOS 11.0, *)) {
         self.parentViewController.view.window.subtitle = self.host.activeAddress;
-    }
+    }*/
     
     [self.parentViewController.view.window moonlight_toolbarItemForAction:@selector(backButtonClicked:)].enabled = YES;
 #pragma clang diagnostic push

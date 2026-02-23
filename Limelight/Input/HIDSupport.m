@@ -5,6 +5,9 @@
 //  Created by Michael Kenny on 26/12/17.
 //  Copyright © 2017 Moonlight Stream. All rights reserved.
 //
+#import <Foundation/Foundation.h>
+#import <objc/message.h>
+#import "TableViewController.h"
 
 #import "HIDSupport.h"
 #import "Controller.h"
@@ -397,6 +400,8 @@ typedef enum {
 @property (nonatomic) dispatch_queue_t rumbleQueue;
 @property (nonatomic, strong) NSDictionary *mappings;
 @property (nonatomic) IOHIDManagerRef hidManager;
+@property (nonatomic) IOHIDDeviceRef xboxDevice;
+@property (nonatomic, strong) NSMutableArray *deviceList;
 @property (nonatomic, strong) Controller *controller;
 @property (nonatomic) CVDisplayLinkRef displayLink;
 @property (atomic) CGFloat mouseDeltaX;
@@ -458,18 +463,7 @@ SwitchCommonOutputPacket_t switchRumblePacket;
 
         self.controller = [[Controller alloc] init];
         
-        if (@available(macOS 11.0, *)) {
-            for (GCMouse *mouse in GCMouse.mice) {
-                [self registerMouseCallbacks:mouse];
-            }
-
-            self.mouseConnectObserver = [[NSNotificationCenter defaultCenter] addObserverForName:GCMouseDidConnectNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-                [self registerMouseCallbacks:note.object];
-            }];
-            self.mouseDisconnectObserver = [[NSNotificationCenter defaultCenter] addObserverForName:GCMouseDidDisconnectNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-                [self unregisterMouseCallbacks:note.object];
-            }];
-        }
+        [self setupController];
         
         NSMutableDictionary *d = [NSMutableDictionary dictionary];
         for (size_t i = 0; i < sizeof(keys) / sizeof(struct KeyMapping); i++) {
@@ -487,57 +481,109 @@ SwitchCommonOutputPacket_t switchRumblePacket;
     NSLog(@"HIDSupport dealloc");
 }
 
--(void)registerMouseCallbacks:(GCMouse *)mouse API_AVAILABLE(macos(11.0)) {
-    if (!self.useGCMouse) {
+ // Modification to compile on Mojave
+- (void)registerMouseCallbacks:(id)mouse {
+    if (!self.useGCMouse || mouse == nil) {
         return;
     }
-    
-    mouse.mouseInput.mouseMovedHandler = ^(GCMouseInput * _Nonnull mouse, float deltaX, float deltaY) {
-        self.mouseDeltaX += deltaX;
-        self.mouseDeltaY -= deltaY;
-    };
-    
-    mouse.mouseInput.leftButton.pressedChangedHandler = ^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed) {
-        if (self.shouldSendInputEvents) {
-            LiSendMouseButtonEvent(pressed ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE, BUTTON_LEFT);
+
+    id mouseInput = nil;
+    SEL mouseInputSel = NSSelectorFromString(@"mouseInput");
+    if ([mouse respondsToSelector:mouseInputSel]) {
+        mouseInput = [mouse performSelector:mouseInputSel];
+    }
+
+    if (!mouseInput) return;
+
+    // mouseMovedHandler
+    SEL mouseMovedHandlerSel = NSSelectorFromString(@"setMouseMovedHandler:");
+    if ([mouseInput respondsToSelector:mouseMovedHandlerSel]) {
+        void (^movedHandler)(id, float, float) = ^(id mouseObj, float deltaX, float deltaY) {
+            self.mouseDeltaX += deltaX;
+            self.mouseDeltaY -= deltaY;
+        };
+        ((void (*)(id, SEL, id))objc_msgSend)(mouseInput, mouseMovedHandlerSel, movedHandler);
+    }
+
+    NSArray *buttonNames = @[ @"leftButton", @"middleButton", @"rightButton" ];
+    NSArray *buttonConstants = @[ @BUTTON_LEFT, @BUTTON_MIDDLE, @BUTTON_RIGHT ];
+
+    for (NSInteger i = 0; i < buttonNames.count; i++) {
+        SEL buttonSel = NSSelectorFromString(buttonNames[i]);
+        if ([mouseInput respondsToSelector:buttonSel]) {
+            id button = [mouseInput performSelector:buttonSel];
+            SEL pressedHandlerSel = NSSelectorFromString(@"setPressedChangedHandler:");
+            if ([button respondsToSelector:pressedHandlerSel]) {
+                int btnConst = [buttonConstants[i] intValue];
+                void (^pressedHandler)(id, float, BOOL) = ^(id btn, float value, BOOL pressed) {
+                    if (self.shouldSendInputEvents) {
+                        LiSendMouseButtonEvent(pressed ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE, btnConst);
+                    }
+                };
+                ((void (*)(id, SEL, id))objc_msgSend)(button, pressedHandlerSel, pressedHandler);
+            }
         }
-    };
-    mouse.mouseInput.middleButton.pressedChangedHandler = ^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed) {
-        if (self.shouldSendInputEvents) {
-            LiSendMouseButtonEvent(pressed ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE, BUTTON_MIDDLE);
+    }
+
+    // auxiliaryButtons
+    SEL auxSel = NSSelectorFromString(@"auxiliaryButtons");
+    if ([mouseInput respondsToSelector:auxSel]) {
+        NSArray *auxButtons = [mouseInput performSelector:auxSel];
+        for (int i = 0; i < 2 && i < [auxButtons count]; i++) {
+            id button = auxButtons[i];
+            SEL pressedHandlerSel = NSSelectorFromString(@"setPressedChangedHandler:");
+            if ([button respondsToSelector:pressedHandlerSel]) {
+                int btnConst = (i == 0) ? BUTTON_X1 : BUTTON_X2;
+                void (^pressedHandler)(id, float, BOOL) = ^(id btn, float value, BOOL pressed) {
+                    if (self.shouldSendInputEvents) {
+                        LiSendMouseButtonEvent(pressed ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE, btnConst);
+                    }
+                };
+                ((void (*)(id, SEL, id))objc_msgSend)(button, pressedHandlerSel, pressedHandler);
+            }
         }
-    };
-    mouse.mouseInput.rightButton.pressedChangedHandler = ^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed) {
-        if (self.shouldSendInputEvents) {
-            LiSendMouseButtonEvent(pressed ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE, BUTTON_RIGHT);
-        }
-    };
-    
-    mouse.mouseInput.auxiliaryButtons[0].pressedChangedHandler = ^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed) {
-        if (self.shouldSendInputEvents) {
-            LiSendMouseButtonEvent(pressed ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE, BUTTON_X1);
-        }
-    };
-    mouse.mouseInput.auxiliaryButtons[1].pressedChangedHandler = ^(GCControllerButtonInput * _Nonnull button, float value, BOOL pressed) {
-        if (self.shouldSendInputEvents) {
-            LiSendMouseButtonEvent(pressed ? BUTTON_ACTION_PRESS : BUTTON_ACTION_RELEASE, BUTTON_X2);
-        }
-    };
+    }
 }
 
--(void)unregisterMouseCallbacks:(GCMouse*)mouse API_AVAILABLE(macos(11.0)) {
-    if (!self.useGCMouse) {
+// Modification to compile on Mojave
+- (void)unregisterMouseCallbacks:(id)mouse {
+    if (!self.useGCMouse || mouse == nil) {
         return;
     }
-    
-    mouse.mouseInput.mouseMovedHandler = nil;
-    
-    mouse.mouseInput.leftButton.pressedChangedHandler = nil;
-    mouse.mouseInput.middleButton.pressedChangedHandler = nil;
-    mouse.mouseInput.rightButton.pressedChangedHandler = nil;
-    
-    for (GCControllerButtonInput* auxButton in mouse.mouseInput.auxiliaryButtons) {
-        auxButton.pressedChangedHandler = nil;
+
+    SEL mouseInputSel = NSSelectorFromString(@"mouseInput");
+    id mouseInput = ([mouse respondsToSelector:mouseInputSel]) ? [mouse performSelector:mouseInputSel] : nil;
+    if (!mouseInput) return;
+
+    // mouseMovedHandler = nil
+    SEL setMouseMovedHandlerSel = NSSelectorFromString(@"setMouseMovedHandler:");
+    if ([mouseInput respondsToSelector:setMouseMovedHandlerSel]) {
+        ((void (*)(id, SEL, id))objc_msgSend)(mouseInput, setMouseMovedHandlerSel, nil);
+    }
+
+    // Botões principais
+    NSArray *buttonNames = @[ @"leftButton", @"middleButton", @"rightButton" ];
+    for (NSString *btnName in buttonNames) {
+        SEL btnSel = NSSelectorFromString(btnName);
+        if ([mouseInput respondsToSelector:btnSel]) {
+            id button = [mouseInput performSelector:btnSel];
+            SEL setPressedChangedHandlerSel = NSSelectorFromString(@"setPressedChangedHandler:");
+            if ([button respondsToSelector:setPressedChangedHandlerSel]) {
+                ((void (*)(id, SEL, id))objc_msgSend)(button, setPressedChangedHandlerSel, nil);
+            }
+        }
+    }
+
+    // auxiliaryButtons
+    SEL auxSel = NSSelectorFromString(@"auxiliaryButtons");
+    if ([mouseInput respondsToSelector:auxSel]) {
+        NSArray *auxButtons = [mouseInput performSelector:auxSel];
+        SEL setPressedChangedHandlerSel = NSSelectorFromString(@"setPressedChangedHandler:");
+        for (id button in auxButtons) {
+            if ([button respondsToSelector:setPressedChangedHandlerSel]) {
+                ((void (*)(id, SEL, id))objc_msgSend)(button, setPressedChangedHandlerSel, nil);
+            }
+        }
     }
 }
 
@@ -579,6 +625,180 @@ static CVReturn displayLinkOutputCallback(CVDisplayLinkRef displayLink,
     }
 
     return kCVReturnSuccess;
+}
+
+typedef NS_ENUM(NSUInteger, AxisType) {
+    AxisTypeLeftStickX,
+    AxisTypeLeftStickY,
+    AxisTypeRightStickX,
+    AxisTypeRightStickY,
+    AxisTypeLeftTrigger,
+    AxisTypeRightTrigger
+};
+
+- (NSDictionary *)bindingToAxis {
+    
+    if (!_bindingToAxis) {
+        _bindingToAxis = @{
+            @"Left Stick ↑ (Move Up)": @(AxisTypeLeftStickY),
+            @"Left Stick ← (Move Left)": @(AxisTypeLeftStickX),
+            @"Right Stick ↑ (Move Up)": @(AxisTypeRightStickY),
+            @"Right Stick → (Move Right)": @(AxisTypeRightStickX),
+            @"LT": @(AxisTypeLeftTrigger),
+            @"RT": @(AxisTypeRightTrigger)
+        };
+    }
+    return _bindingToAxis;
+}
+
+
+- (NSDictionary *)bindingToFlag {
+    
+    if (!_bindingToFlag) {
+        _bindingToFlag = @{
+            @"A": @(A_FLAG),
+            @"B": @(B_FLAG),
+            @"X": @(X_FLAG),
+            @"Y": @(Y_FLAG),
+            @"Left": @(LEFT_FLAG),
+            @"Right": @(RIGHT_FLAG),
+            @"Up": @(UP_FLAG),
+            @"Down": @(DOWN_FLAG),
+            @"LB": @(LB_FLAG),
+            @"RB": @(RB_FLAG),
+            @"Start": @(PLAY_FLAG),
+            @"Back": @(BACK_FLAG),
+            @"Special": @(SPECIAL_FLAG),
+            @"LS Click": @(LS_CLK_FLAG),
+            @"RS Click": @(RS_CLK_FLAG)
+        };
+    }
+    return _bindingToFlag;
+}
+
+- (void)handleButtonBinding:(NSString *)binding intValue:(CFIndex)intValue {
+    
+    BOOL pressed = (intValue != 0);
+    uint32_t flag = [self flagForBinding:binding];
+
+    if (pressed){
+        self.controller.lastButtonFlags |= flag;
+    }
+    else {
+        self.controller.lastButtonFlags &= ~flag;
+    }
+    [self sendControllerEvent];
+}
+
+- (void)handleAxisBinding:(AxisType)axis normalized:(int)value {
+    
+    switch (axis) {
+        case AxisTypeLeftStickX:
+            self.controller.lastLeftStickX = value;
+            break;
+
+        case AxisTypeLeftStickY:
+            self.controller.lastLeftStickY = value;
+            break;
+
+        case AxisTypeRightStickX:
+            self.controller.lastRightStickX = value;
+            break;
+
+        case AxisTypeRightStickY:
+            self.controller.lastRightStickY = value;
+            break;
+            
+        case AxisTypeLeftTrigger:
+            self.controller.lastLeftTrigger = value;
+            break;
+
+        case AxisTypeRightTrigger:
+            self.controller.lastRightTrigger = value;
+            break;
+    }
+    [self sendControllerEvent];
+}
+
+- (uint32_t)flagForBinding:(NSString *)binding {
+    return [self.bindingToFlag[binding] unsignedIntValue];
+}
+
+- (void)handleMappingInput:(uint32_t)usagePage usage:(uint32_t)usage {
+    
+    NSString *hex = [NSString stringWithFormat:@"0x%02X:0x%02X", usagePage, usage];
+    if ([hex isEqualToString:self.lastMappedHex])
+        return;
+
+    self.lastMappedHex = hex;
+
+    if (self.mapping) {
+        [self.mapping didReceiveMappingHex:hex];
+        return;
+    }
+}
+
+
+- (void)handleMappedInput:(uint32_t)usagePage usage:(uint32_t)usage intValue:(CFIndex)intValue
+    type:(IOHIDElementType)type element:(IOHIDElementRef)element {
+    
+    NSString *hex = [NSString stringWithFormat:@"0x%02X:0x%02X", usagePage, usage];
+    NSString *binding = self.savedMapping[hex];
+
+    switch (type) {
+
+        case kIOHIDElementTypeInput_Button:
+            [self handleButtonBinding:binding intValue:intValue];
+            break;
+
+        case kIOHIDElementTypeInput_Axis:
+        case kIOHIDElementTypeInput_Misc:
+        {
+            NSNumber *axisNumber = self.bindingToAxis[binding];
+            //if (!axisNumber) return;
+
+            AxisType axis = axisNumber.unsignedIntegerValue;
+            
+            CFIndex min = IOHIDElementGetLogicalMin(element);
+            CFIndex max = IOHIDElementGetLogicalMax(element);
+            
+            CFIndex clamped = intValue;
+            if (clamped > max) clamped = max;
+            if (clamped < min) clamped = min;
+
+            if ([self isAxisInverted:axis]) {
+                clamped = min + max - clamped;
+            }
+            short finalValue = (short)clamped;
+            
+            [self handleAxisBinding:axis normalized:(short)finalValue];
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (BOOL)isAxisInverted:(AxisType)axis {
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    switch (axis) {
+        case AxisTypeLeftStickX:
+            return [defaults boolForKey:kInvertLeftXKey];
+
+        case AxisTypeLeftStickY:
+            return [defaults boolForKey:kInvertLeftYKey];
+
+        case AxisTypeRightStickX:
+            return [defaults boolForKey:kInvertRightXKey];
+
+        case AxisTypeRightStickY:
+            return [defaults boolForKey:kInvertRightYKey];
+
+        default:
+            return NO;
+    }
 }
 
 - (BOOL)initializeDisplayLink
@@ -709,19 +929,11 @@ static CVReturn displayLinkOutputCallback(CVDisplayLinkRef displayLink,
 
     if (self.shouldSendInputEvents) {
         if (event.hasPreciseScrollingDeltas) {
-#ifdef USE_RESOLUTION_SYNC
-            if (cfdyMouseScrollMethod()) {
-                CFDYSendHighResScrollEvent(event.scrollingDeltaY);
+            if (absDeltaX > absDeltaY) {
+                LiSendHighResHScrollEvent(-event.scrollingDeltaX);
             } else {
-#endif
-                if (absDeltaX > absDeltaY) {
-                    LiSendHighResHScrollEvent(-event.scrollingDeltaX);
-                } else {
-                    LiSendHighResScrollEvent(event.scrollingDeltaY);
-                }
-#ifdef USE_RESOLUTION_SYNC
+                LiSendHighResScrollEvent(event.scrollingDeltaY);
             }
-#endif
         } else {
             if (absDeltaX > absDeltaY) {
                 LiSendHScrollEvent(-event.scrollingDeltaX);
@@ -1369,6 +1581,14 @@ void myHIDCallback(void* context, IOReturn result, void* sender, IOHIDValueRef v
                 break;
         }
     }
+    
+    if (self.isMapping) {
+        [self handleMappingInput:usagePage usage:usage];
+        return;
+    }
+    
+    IOHIDElementType type = IOHIDElementGetType(elem);
+    [self handleMappedInput:usagePage usage:usage intValue:intValue type:type element:elem];
 
     if (self.controllerDriver == 0) {
         [self sendControllerEvent];
@@ -1724,18 +1944,127 @@ void myHIDDeviceRemovalCallback(void * _Nullable        context,
     }
 }
 
-- (void)tearDownHidManager {    
+- (void)setupController {
+
+    CFSetRef deviceSet = IOHIDManagerCopyDevices(self.hidManager);
+    if (!deviceSet) {
+        return;
+    }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSInteger targetVendor = [defaults integerForKey:@"controllerVendorID"];
+    NSInteger targetProduct = [defaults integerForKey:@"controllerProductID"];
+
+    CFIndex count = CFSetGetCount(deviceSet);
+    IOHIDDeviceRef* devices = malloc(sizeof(IOHIDDeviceRef) * count);
+    CFSetGetValues(deviceSet, (const void**)devices);
+
+    for (CFIndex i = 0; i < count; i++) {
+        IOHIDDeviceRef device = devices[i];
+        NSNumber* vendor = (__bridge NSNumber*)IOHIDDeviceGetProperty(device, CFSTR(kIOHIDVendorIDKey));
+        NSNumber* product = (__bridge NSNumber*)IOHIDDeviceGetProperty(device, CFSTR(kIOHIDProductIDKey));
+
+        if (vendor.intValue == targetVendor && product.intValue == targetProduct) {
+            self.xboxDevice = device;
+            [self loadMappingForDevice:device];
+            IOHIDDeviceRegisterInputValueCallback(self.xboxDevice, myHIDCallback, (__bridge void*)self);
+            IOHIDDeviceScheduleWithRunLoop(self.xboxDevice, CFRunLoopGetMain(), kCFRunLoopDefaultMode);
+            break;
+        }
+    }
+
+    free(devices);
+    CFRelease(deviceSet);
+}
+
+
+- (NSArray<NSString *> *)populateControllerList {
+
+    if (!self.hidManager) {
+        return @[];
+    }
+
+    CFSetRef deviceSet = IOHIDManagerCopyDevices(self.hidManager);
+    if (!deviceSet) {
+        return @[];
+    }
+
+    CFIndex count = CFSetGetCount(deviceSet);
+    IOHIDDeviceRef *devices = malloc(sizeof(IOHIDDeviceRef) * count);
+    CFSetGetValues(deviceSet, (const void **)devices);
+ 
+    self.deviceList = [NSMutableArray arrayWithCapacity:count];
+    NSMutableArray *controllers = [NSMutableArray arrayWithCapacity:count];
+
+    for (CFIndex i = 0; i < count; i++) {
+        IOHIDDeviceRef device = devices[i];
+        [self.deviceList addObject:(__bridge id)device];
+        
+        NSString *product =
+            (__bridge NSString *)IOHIDDeviceGetProperty(device, CFSTR(kIOHIDProductKey));
+
+        if (!product) {
+            product = @"(No Name)";
+        }
+
+        [controllers addObject:product];
+    }
+
+    free(devices);
+    CFRelease(deviceSet);
+
+    NSLog(@"[HID] Found %lu devices", controllers.count);
+    return controllers;
+}
+ 
+
+- (void)loadMappingForDevice:(IOHIDDeviceRef)device {
+    
+    NSNumber *vendor = (__bridge NSNumber *)IOHIDDeviceGetProperty(device, CFSTR(kIOHIDVendorIDKey));
+    NSNumber *product = (__bridge NSNumber *)IOHIDDeviceGetProperty(device, CFSTR(kIOHIDProductIDKey));
+
+    if (!vendor || !product) return;
+
+    NSString *deviceKey = [NSString stringWithFormat:@"%@_%@", vendor, product];
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *allMappings = [defaults dictionaryForKey:@"controllerMappings"];
+
+    NSDictionary *mappingDict = allMappings[deviceKey];
+
+    if (mappingDict) {
+        self.savedMapping = mappingDict;
+        NSLog(@"[HID] Mapping loaded to %@", deviceKey);
+    }
+}
+
+
+- (void)connectToDeviceAtIndex:(NSInteger)index {
+    if (index < 0 || index >= self.deviceList.count) return;
+
+    IOHIDDeviceRef device = (__bridge IOHIDDeviceRef)self.deviceList[index];
+    IOReturn ret = IOHIDDeviceOpen(device, kIOHIDOptionsTypeNone);
+    if (ret != kIOReturnSuccess) {
+        NSLog(@"Error opening device (%d)", ret);
+        return;
+    }else{
+        NSLog(@"Device successfully opened");
+    }
+}
+
+- (void)tearDownHidManager {
     [[NSNotificationCenter defaultCenter] removeObserver:self.mouseConnectObserver];
     [[NSNotificationCenter defaultCenter] removeObserver:self.mouseDisconnectObserver];
     self.mouseConnectObserver = nil;
     self.mouseDisconnectObserver = nil;
 
-    if (@available(macOS 11.0, *)) {
-        for (GCMouse *mouse in GCMouse.mice) {
-            [self unregisterMouseCallbacks:mouse];
-        }
-    }
-    
+    /*
+     removed to compile on Mojave
+     
+    for (GCMouse *mouse in GCMouse.mice) {
+        [self unregisterMouseCallbacks:mouse];
+    }*/
+
     if (self.displayLink != NULL) {
         CVDisplayLinkStop(self.displayLink);
         CVDisplayLinkRelease(self.displayLink);

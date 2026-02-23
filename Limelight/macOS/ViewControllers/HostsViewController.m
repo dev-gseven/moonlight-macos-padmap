@@ -60,9 +60,6 @@
     [super viewWillAppear];
     
     self.parentViewController.title = @"Moonlight";
-    if (@available(macOS 11.0, *)) {
-        self.parentViewController.view.window.subtitle = [Helpers versionNumberString];
-    }
 
     [self.parentViewController.view.window moonlight_toolbarItemForAction:@selector(addHostButtonClicked:)].enabled = YES;
 #pragma clang diagnostic push

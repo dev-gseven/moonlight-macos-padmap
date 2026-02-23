@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E965EB02E99C67A0048C689 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E965EAF2E99C67A0048C689 /* TableViewController.m */; };
+		1EE01B5B2E7A072800DFA5F7 /* ControllerPrefs.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EE01B592E7A072800DFA5F7 /* ControllerPrefs.m */; };
+		1EE01B5C2E7A072800DFA5F7 /* ControllerPrefs.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1EE01B5A2E7A072800DFA5F7 /* ControllerPrefs.xib */; };
+		1EF7935A2E9DB28600C3FE2A /* BindingData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EF793592E9DB28600C3FE2A /* BindingData.m */; };
+		1EF94BD12E2FD20C008CD22A /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1EF94BD02E2FD1F9008CD22A /* libxml2.tbd */; };
 		4C12130E236FF750005A60A0 /* HostCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C12130D236FF750005A60A0 /* HostCellView.m */; };
 		4C2E24811FF1E99300B6A12E /* HIDSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C2E24801FF1E99300B6A12E /* HIDSupport.m */; };
 		4C2E24871FF3934700B6A12E /* StreamViewMac.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C2E24861FF3934700B6A12E /* StreamViewMac.m */; };
@@ -118,6 +123,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E965EAE2E99C67A0048C689 /* TableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
+		1E965EAF2E99C67A0048C689 /* TableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
+		1EE01B582E7A072800DFA5F7 /* ControllerPrefs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControllerPrefs.h; sourceTree = "<group>"; };
+		1EE01B592E7A072800DFA5F7 /* ControllerPrefs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ControllerPrefs.m; sourceTree = "<group>"; };
+		1EE01B5A2E7A072800DFA5F7 /* ControllerPrefs.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ControllerPrefs.xib; sourceTree = "<group>"; };
+		1EF793582E9DB28600C3FE2A /* BindingData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BindingData.h; sourceTree = "<group>"; };
+		1EF793592E9DB28600C3FE2A /* BindingData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BindingData.m; sourceTree = "<group>"; };
+		1EF94BCC2E2FC2F3008CD22A /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = "../../../../Library/Frameworks/SDL3.xcframework/macos-arm64_x86_64/SDL3.framework"; sourceTree = "<group>"; };
+		1EF94BD02E2FD1F9008CD22A /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		4C12130C236FF750005A60A0 /* HostCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HostCellView.h; sourceTree = "<group>"; };
 		4C12130D236FF750005A60A0 /* HostCellView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HostCellView.m; sourceTree = "<group>"; };
 		4C2556A121F56F280009838E /* Moonlight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Moonlight.entitlements; sourceTree = "<group>"; };
@@ -394,6 +408,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EF94BD12E2FD20C008CD22A /* libxml2.tbd in Frameworks */,
 				4C38E82E1FF0C71D000425CD /* libmoonlight-common.a in Frameworks */,
 				4C97FE5E24CD3C1A001F3064 /* libopus.a in Frameworks */,
 				4C38E7F71FEE0219000425CD /* libcrypto.a in Frameworks */,
@@ -456,6 +471,13 @@
 		4C7E0A921FECC4B500684411 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				1EF793582E9DB28600C3FE2A /* BindingData.h */,
+				1EF793592E9DB28600C3FE2A /* BindingData.m */,
+				1E965EAE2E99C67A0048C689 /* TableViewController.h */,
+				1E965EAF2E99C67A0048C689 /* TableViewController.m */,
+				1EE01B582E7A072800DFA5F7 /* ControllerPrefs.h */,
+				1EE01B592E7A072800DFA5F7 /* ControllerPrefs.m */,
+				1EE01B5A2E7A072800DFA5F7 /* ControllerPrefs.xib */,
 				4C38E8111FEE30F8000425CD /* ContainerViewController.h */,
 				4C38E8121FEE30F8000425CD /* ContainerViewController.m */,
 				4C7E0A951FECCF9A00684411 /* HostsViewController.h */,
@@ -600,6 +622,8 @@
 		FB290CF019B2C406004C83CF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1EF94BD02E2FD1F9008CD22A /* libxml2.tbd */,
+				1EF94BCC2E2FC2F3008CD22A /* SDL3.framework */,
 				FB89468F19F6AFB800339C8A /* libs */,
 			);
 			name = Frameworks;
@@ -1006,6 +1030,7 @@
 				4CA454C8277ADD0600E99A96 /* OptimalSettingsConfigurer.xib in Resources */,
 				4CBBE13B24CFF7B700B4706E /* AboutView.xib in Resources */,
 				4C38E8181FEF36A0000425CD /* AppCell.xib in Resources */,
+				1EE01B5C2E7A072800DFA5F7 /* ControllerPrefs.xib in Resources */,
 				4C4FB2B523713AC300D0FCE3 /* AboutWindow.xib in Resources */,
 				4C7E0A831FECBFFD00684411 /* Assets.xcassets in Resources */,
 				4CDC8E7525E7565B009E66C6 /* ResolutionSyncPrefsPaneView.xib in Resources */,
@@ -1051,6 +1076,7 @@
 				4C38E8041FEE08C8000425CD /* TemporaryHost.m in Sources */,
 				4C38E82A1FF0BFA0000425CD /* StreamConfiguration.m in Sources */,
 				4C38E8261FF0B609000425CD /* StreamViewController.m in Sources */,
+				1E965EB02E99C67A0048C689 /* TableViewController.m in Sources */,
 				4CC3C02D1FF72A3D0029EBF5 /* AppCellView.m in Sources */,
 				4C38E7F01FEE00F6000425CD /* Logger.m in Sources */,
 				4C3C619E20BD2D4A0045FE30 /* DatabaseSingleton.m in Sources */,
@@ -1073,6 +1099,7 @@
 				4C38E7FF1FEE08A0000425CD /* HttpResponse.m in Sources */,
 				4C38E8211FEF5634000425CD /* AppListResponse.m in Sources */,
 				4CDC8E7425E7565B009E66C6 /* ResolutionSyncPrefsPaneVC.m in Sources */,
+				1EE01B5B2E7A072800DFA5F7 /* ControllerPrefs.m in Sources */,
 				4C4B02EC236FF5F200B63AE6 /* WakeOnLanManager.m in Sources */,
 				4C38E8131FEE30F8000425CD /* ContainerViewController.m in Sources */,
 				4C38E8081FEE09D0000425CD /* Utils.m in Sources */,
@@ -1115,6 +1142,7 @@
 				4C51EE3525E0DE2700F205D3 /* AlternateControllerNetworking.m in Sources */,
 				4C651041278FD2880089E407 /* NSResponder+Moonlight.m in Sources */,
 				4C38E8281FF0BF83000425CD /* StreamManager.m in Sources */,
+				1EF7935A2E9DB28600C3FE2A /* BindingData.m in Sources */,
 				4C819450202EC3230023F308 /* AppDelegateForAppKit.m in Sources */,
 				4C682BD124D1227600A70C44 /* Helpers.m in Sources */,
 				4C38E8021FEE08B1000425CD /* TemporarySettings.m in Sources */,
@@ -1161,12 +1189,16 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Moonlight.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = YH23FJA92F;
+				DEVELOPMENT_TEAM = SDCGU92768;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks/SDL3.xcframework/macos-arm64_x86_64",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Limelight/macOS/Supporting Files/Limelight-Prefix.pch";
@@ -1185,6 +1217,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.coofdylabs.MoonlightMac;
 				PRODUCT_NAME = Moonlight;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1209,13 +1242,17 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Moonlight.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = YH23FJA92F;
+				DEVELOPMENT_TEAM = SDCGU92768;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks/SDL3.xcframework/macos-arm64_x86_64",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Limelight/macOS/Supporting Files/Limelight-Prefix.pch";
@@ -1234,6 +1271,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.coofdylabs.MoonlightMac;
 				PRODUCT_NAME = Moonlight;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1311,12 +1349,16 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Moonlight.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = YH23FJA92F;
+				DEVELOPMENT_TEAM = SDCGU92768;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks/SDL3.xcframework/macos-arm64_x86_64",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Limelight/macOS/Supporting Files/Limelight-Prefix.pch";
@@ -1335,6 +1377,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.coofdylabs.MoonlightMac;
 				PRODUCT_NAME = Moonlight;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1410,13 +1453,17 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = Moonlight.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = YH23FJA92F;
+				DEVELOPMENT_TEAM = SDCGU92768;
 				ENABLE_HARDENED_RUNTIME = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks/SDL3.xcframework/macos-arm64_x86_64",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Limelight/macOS/Supporting Files/Limelight-Prefix.pch";
@@ -1435,6 +1482,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.coofdylabs.MoonlightMac;
 				PRODUCT_NAME = Moonlight;
 				PROVISIONING_PROFILE_SPECIFIER = "";

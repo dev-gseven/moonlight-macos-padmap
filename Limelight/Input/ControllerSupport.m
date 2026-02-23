@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Moonlight Stream. All rights reserved.
 //
 
+#import <objc/message.h>
 #import "ControllerSupport.h"
 #import "Controller.h"
 
@@ -440,12 +441,20 @@ static const double MOUSE_SPEED_DIVISOR = 2.5;
                     }
                 }
                 
-                if (@available(iOS 14.0, tvOS 14.0, macOS 11.0, *)) {
-                    if (gamepad.buttonHome != nil) {
-                        UPDATE_BUTTON_FLAG(limeController, SPECIAL_FLAG, gamepad.buttonHome.pressed);
+                
+                    if (@available(macOS 10.11, *)) { // Modification to compile on Mojave
+                        SEL buttonHomeSelector = NSSelectorFromString(@"buttonHome");
+                        if ([gamepad respondsToSelector:buttonHomeSelector]) {
+                            // Chamada segura usando objc_msgSend
+                            GCControllerButtonInput *(*getter)(id, SEL) = (void *)objc_msgSend;
+                            GCControllerButtonInput *buttonHome = getter(gamepad, buttonHomeSelector);
+                            if (buttonHome != nil) {
+                                UPDATE_BUTTON_FLAG(limeController, SPECIAL_FLAG, buttonHome.pressed);
+                            }
+                        }
                     }
-                }
-
+                
+                
                 leftStickX = gamepad.leftThumbstick.xAxis.value * 0x7FFE;
                 leftStickY = gamepad.leftThumbstick.yAxis.value * 0x7FFE;
                 
