@@ -1,3 +1,21 @@
+# About this fork
+## Added controller mapping support
+### You still need a driver, if your controller is blinking searching for connections, it won't work.
+#### I am using [360Controller](https://github.com/360controller/360controller/releases) driver.
+
+## Usage
+#### Click on the controller icon:
+<img width="246" height="185" alt="Screen Shot 2026-02-23 at 17 21 00" src="https://github.com/user-attachments/assets/02852ba0-9d31-43c5-bf7a-a754cf751261" />
+
+#### It will open a window like this:
+<img width="544" height="308" alt="Screen Shot 2026-02-23 at 17 19 49" src="https://github.com/user-attachments/assets/f431ebae-5a37-461f-bf5f-646245341746" /> 
+
+#### Select your controller on popup-button and click 'Start Mapping', the app will show which key is being mapped. Once you finish, it will save the mappings for the current controller.
+
+### You can have many mappings, but only ONE will be used, make sure you click 'Set as Default' to your desired controller.
+
+#### I have made some changes to compile on macOS Mojave, I am not sure if it can compile on earlier versions.
+
 # Moonlight macOS
 
 Moonlight macOS is a native macOS client for NVIDIA's GameStream. It allows you to stream games from your desktop computer to your Mac.
