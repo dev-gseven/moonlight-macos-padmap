@@ -177,4 +177,8 @@ typedef enum : NSUInteger {
     self.controllerWC = nil;
 }
 
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
+    return YES;
+}
+
 @end
