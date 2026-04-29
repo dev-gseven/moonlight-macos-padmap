@@ -173,4 +173,8 @@ typedef enum : NSUInteger {
     [self.controllerWC.window makeKeyAndOrderFront:nil];
 }
 
+- (void)destroyControllerWindow {
+    self.controllerWC = nil;
+}
+
 @end

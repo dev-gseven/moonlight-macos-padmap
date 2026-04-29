@@ -34,6 +34,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [self.hidSupport tearDownHidManager];
+    NSLog(@"TableViewController dealloc");
+}
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     return [list count];

@@ -8,6 +8,7 @@
 
 #import "ControllerPrefs.h"
 #import "TableViewController.h"
+#import "AppDelegateForAppKit.h"
 
 @interface ControllerPrefs ()
 
@@ -16,30 +17,28 @@
 @implementation ControllerPrefs
 
 
-//- (void)windowDidLoad {
 - (void)showWindow:(id)sender{
-    [super windowDidLoad];
+    [super showWindow:sender];
     [self.window center];
     
-    if (!self.hidSupport){
-        self.hidSupport = [[HIDSupport alloc] init];
+    if (!self.tableViewController.hidSupport){
+        self.tableViewController.hidSupport = [[HIDSupport alloc] init];
     }
-    self.tableViewController.hidSupport = self.hidSupport;
     
     [self reloadControllers];
     [self.tableViewController restoreInvertStates];
 }
 
 - (void)reloadControllers{
-    NSArray *controllers = [self.hidSupport populateControllerList];
+    NSArray *controllers = [self.tableViewController.hidSupport populateControllerList];
     [self.tableViewController.controllerList removeAllItems];
     [self.tableViewController.controllerList addItemsWithTitles:controllers];
 }
 
 
 - (void)windowWillClose:(NSNotification *)notification {
-    [self.hidSupport tearDownHidManager];
-    self.hidSupport = nil;
+    id appDelegate = NSApp.delegate;
+    [appDelegate destroyControllerWindow];
 }
 
 @end

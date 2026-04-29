@@ -12,11 +12,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class TableViewController;
+@class AppDelegateForAppKit;
 
 @interface ControllerPrefs : NSWindowController
 
-@property (strong) HIDSupport *hidSupport;
 @property (weak) IBOutlet TableViewController *tableViewController;
+@property (strong) AppDelegateForAppKit *appDelegate;
 
 @end
 
